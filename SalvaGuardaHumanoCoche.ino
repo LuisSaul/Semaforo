@@ -2,11 +2,13 @@
 #define rojo 3
 #define amarillo 4
 #define verde 5
+#define rojoPeaton 6
 #define ledPeaton 8
 #define pot A1
 #define speakerPin 9
 int valorPot = 0;
 int val2=0;
+boolean espera= false;
 void setup() {
   Serial.begin(9600);
   pinMode(rojo,OUTPUT);
@@ -14,6 +16,7 @@ void setup() {
   pinMode(verde,OUTPUT);
   pinMode(button, INPUT_PULLUP);
   pinMode(ledPeaton,OUTPUT);
+  pinMode(rojoPeaton,OUTPUT);
   pinMode(speakerPin, OUTPUT);
 }
 
@@ -26,9 +29,15 @@ void loop() {
 }
 
 void reiniciaSemaforo(){
-  digitalWrite(speakerPin,LOW);
+  digitalWrite(rojoPeaton,HIGH);
+  digitalWrite(verde, HIGH);
   digitalWrite(ledPeaton, LOW);
-  digitalWrite(rojo, HIGH);
+  digitalWrite(rojo, LOW);
+  digitalWrite(amarillo, LOW);
+  if(espera){
+    espera=false;
+    delay(3000);
+  }
   while(val2<20){
   if(digitalRead(button)==LOW){
     enciendePeaton();
@@ -38,40 +47,22 @@ void reiniciaSemaforo(){
   val2++;
   }
   val2=0;
-  digitalWrite(rojo, LOW);
-  digitalWrite(amarillo, HIGH);
-  while(val2<10){
-  if(digitalRead(button)==LOW){
-    enciendePeaton();
-  }else{
-    delay(100);
-  }
-  val2++;
-  }
-  val2=0;
-  digitalWrite(verde, HIGH);
-  digitalWrite(amarillo, LOW);
-  while(val2<20){
-  if(digitalRead(button)==LOW){
-    enciendePeaton();
-  }else{
-    delay(100);
-  }
-  val2++;
-  }
-  val2=0;
-  digitalWrite(verde, LOW);
-  digitalWrite(rojo, HIGH);
 }
 
 void enciendePeaton(){
   val2=0;
-    digitalWrite(speakerPin,HIGH);
-    delay(500);
-    digitalWrite(rojo, HIGH);
-    digitalWrite(amarillo, LOW);
+  espera=true;
+    analogWrite(speakerPin,128);
+    digitalWrite(rojoPeaton,HIGH);
+    digitalWrite(amarillo, HIGH);
+    digitalWrite(rojo, LOW);
     digitalWrite(verde, LOW);
+    delay(1000);
+    analogWrite(speakerPin,0);
     digitalWrite(ledPeaton, HIGH);
-    delay(3000);
+    digitalWrite(amarillo, LOW);
+    digitalWrite(rojo, HIGH);
+    digitalWrite(rojoPeaton,LOW);
+    delay(valorPot*5);
     reiniciaSemaforo();
 }
