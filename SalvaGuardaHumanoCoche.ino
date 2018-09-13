@@ -4,6 +4,7 @@
 #define verde 5
 #define ledPeaton 8
 #define pot A1
+#define speakerPin 9
 int valorPot = 0;
 int val2=0;
 void setup() {
@@ -13,6 +14,7 @@ void setup() {
   pinMode(verde,OUTPUT);
   pinMode(button, INPUT_PULLUP);
   pinMode(ledPeaton,OUTPUT);
+  pinMode(speakerPin, OUTPUT);
 }
 
 void loop() {
@@ -24,6 +26,7 @@ void loop() {
 }
 
 void reiniciaSemaforo(){
+  digitalWrite(speakerPin,LOW);
   digitalWrite(ledPeaton, LOW);
   digitalWrite(rojo, HIGH);
   while(val2<20){
@@ -63,6 +66,8 @@ void reiniciaSemaforo(){
 
 void enciendePeaton(){
   val2=0;
+    digitalWrite(speakerPin,HIGH);
+    delay(500);
     digitalWrite(rojo, HIGH);
     digitalWrite(amarillo, LOW);
     digitalWrite(verde, LOW);
